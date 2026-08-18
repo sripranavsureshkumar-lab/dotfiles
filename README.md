@@ -148,6 +148,259 @@ The files under `home/` are the real files - editing them here is editing your l
 `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
 You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
 
+## Keybindings
+
+Three layers stack here, each with its own prefix, so they mostly stay out of each other's way:
+WezTerm owns `Cmd` and `Ctrl-Shift`, herdr owns `Ctrl-B`, and Neovim owns `Space` (the leader key).
+
+Everything marked **custom** is set by this repo.
+Everything marked **default** ships with the tool and is listed because it is worth knowing, not because it is configured here.
+
+### Shell (zsh)
+
+| Key | Action |
+| --- | --- |
+| `Ctrl-F` | Accept the greyed-out autosuggestion |
+
+Custom, set in `home.nix` via `bindkey '^f' autosuggest-accept`.
+
+### WezTerm
+
+`wezterm.lua` sets no key assignments, so these are all WezTerm defaults.
+On macOS `SUPER` is `Cmd`.
+Run `wezterm show-keys` for the complete list.
+
+| Key | Action |
+| --- | --- |
+| `Cmd-C` / `Cmd-V` | Copy / paste |
+| `Cmd-T` / `Cmd-W` | New tab / close tab |
+| `Cmd-N` | New window |
+| `Cmd-1` .. `Cmd-9` | Jump to tab 1-9 (`Cmd-9` is the last tab) |
+| `Cmd-{` / `Cmd-}` | Previous / next tab |
+| `Ctrl-Tab` / `Ctrl-Shift-Tab` | Next / previous tab |
+| `Cmd-F` | Search scrollback |
+| `Cmd-K` | Clear scrollback |
+| `Cmd-R` | Reload config |
+| `Cmd-H` / `Cmd-M` | Hide / minimize |
+| `Cmd-Q` | Quit |
+| `Cmd-+` / `Cmd--` / `Cmd-0` | Font bigger / smaller / reset |
+| `Alt-Enter` | Toggle fullscreen |
+| `Shift-PageUp` / `Shift-PageDown` | Scroll by page |
+| `Ctrl-Shift-P` | Command palette |
+| `Ctrl-Shift-U` | Character / emoji picker |
+| `Ctrl-Shift-Space` | Quick select (hint and copy text on screen) |
+| `Ctrl-Shift-X` | Enter copy mode |
+| `Ctrl-Shift-Z` | Zoom pane |
+| `Ctrl-Shift-Alt-"` / `Ctrl-Shift-Alt-%` | Split vertical / horizontal |
+| `Ctrl-Shift-Arrow` | Focus pane in that direction |
+| `Ctrl-Shift-Alt-Arrow` | Resize pane in that direction |
+| `Ctrl-Shift-L` | Debug overlay |
+
+WezTerm copy mode (`Ctrl-Shift-X`) is vim-like: `h/j/k/l` move, `w`/`b`/`e` by word, `g`/`G` top/bottom of scrollback, `0`/`$` line ends, `v` start a selection, `V` line select, `Ctrl-V` block select, `o` jump to the other end, `y` copy and exit, `Esc`/`q`/`Ctrl-C` cancel, `Ctrl-B`/`Ctrl-F` page up/down.
+
+In practice you will mostly use herdr's panes rather than WezTerm's, since herdr runs inside a single WezTerm window.
+
+### Herdr
+
+Prefix is `Ctrl-B`: press it, release, then press the next key.
+All of these are **custom**, set in `home/.config/herdr/config.toml`.
+
+| Key | Action |
+| --- | --- |
+| `Ctrl-B` `h` / `j` / `k` / `l` | Focus pane left / down / up / right |
+| `Ctrl-B` `"` | Split horizontally |
+| `Ctrl-B` `%` | Split vertically |
+| `Ctrl-B` `c` | New tab |
+| `Ctrl-B` `&` | Close tab |
+| `Ctrl-B` `w` | Workspace picker |
+| `Ctrl-B` `g` | Goto |
+| `Ctrl-B` `y` | Enter copy mode |
+
+Copy mode's own keys are fixed by herdr and cannot be rebound: `v` or `Space` starts a selection, `y` or `Enter` copies, `q` or `Esc` cancels.
+
+Any binding not listed above is a herdr default this repo does not override.
+`herdr config reset-keys` backs up `config.toml` and drops the custom bindings.
+
+### Neovim
+
+Leader is `Space`.
+`which-key` pops up after the leader key, so you can discover most of this without leaving the editor.
+
+#### General (custom)
+
+| Key | Mode | Action |
+| --- | --- | --- |
+| `jk` | insert | Exit insert mode |
+| `Ctrl-A` | normal | Select all |
+
+#### Windows and tabs (custom)
+
+| Key | Action |
+| --- | --- |
+| `<leader>sv` / `<leader>sh` | Split vertically / horizontally |
+| `<leader>se` | Make splits equal size |
+| `<leader>sx` | Close current split |
+| `<leader>h` / `<leader>j` / `<leader>k` / `<leader>l` | Move focus left / down / up / right |
+| `<leader>to` / `<leader>tx` | Open / close tab |
+| `<leader>tn` / `<leader>tp` | Next / previous tab |
+| `<leader>tf` | Open current buffer in a new tab |
+
+#### Find, files and diagnostics (custom)
+
+| Key | Action |
+| --- | --- |
+| `<leader>ff` | Find files (Telescope, via `fd`) |
+| `<leader>fg` | Live grep (via `ripgrep`) |
+| `<leader>fb` | Open buffers |
+| `<leader>fh` | Help tags |
+| `<leader>fd` | Diagnostics |
+| `<leader>fr` | Resume the last picker |
+| `<leader>ft` | Find TODO comments |
+| `<leader>ee` | Toggle file explorer |
+| `<leader>ef` | Toggle explorer on the current file |
+| `<leader>ec` / `<leader>er` | Collapse / refresh explorer |
+| `<leader>g` | Neogit |
+| `<leader>xx` | Diagnostics list (Trouble) |
+| `<leader>xd` | Diagnostics for this buffer only |
+| `<leader>xq` | Quickfix list (Trouble) |
+| `<leader>cf` | Format buffer now |
+
+#### Motion and text objects (custom)
+
+| Key | Mode | Action |
+| --- | --- | --- |
+| `s` | normal, visual, operator | Flash jump |
+| `S` | normal, visual, operator | Flash treesitter select |
+| `r` | operator | Remote flash (act on a distant target) |
+| `af` / `if` | visual, operator | A function / inside a function |
+| `ac` / `ic` | visual, operator | A class / inside a class |
+| `gsa` | normal, visual | Add a surrounding |
+| `gsd` | normal | Delete a surrounding |
+| `gsr` | normal | Replace a surrounding |
+| `gsf` / `gsF` | normal | Find surrounding right / left |
+| `gsh` | normal | Highlight a surrounding |
+| `an` / `in` | visual, operator | Around / inside the *next* text object |
+
+mini.surround uses a `gs` prefix rather than its stock `s`, because `s` belongs to flash here.
+Append `n` or `l` to reach the next or previous match, for example `gsdn` deletes the next surrounding.
+
+#### LSP and diagnostics (Neovim defaults)
+
+These ship with Neovim 0.11+ and are **not** redefined by this repo.
+
+| Key | Action |
+| --- | --- |
+| `K` | Hover documentation |
+| `grn` | Rename symbol |
+| `gra` | Code action |
+| `grr` | Find references |
+| `gri` | Go to implementation |
+| `grt` | Go to type definition |
+| `grx` | Run code lens |
+| `gO` | Document symbols |
+| `Ctrl-S` | Signature help (insert and visual) |
+| `]d` / `[d` | Next / previous diagnostic |
+| `]D` / `[D` | Last / first diagnostic in the buffer |
+| `Ctrl-W d` | Show diagnostics under the cursor |
+
+#### Other Neovim defaults worth knowing
+
+| Key | Action |
+| --- | --- |
+| `gcc` / `gc{motion}` | Toggle comment |
+| `gx` | Open the file path or URL under the cursor |
+| `]q` / `[q` | Next / previous quickfix item |
+| `]b` / `[b` | Next / previous buffer |
+| `]t` / `[t` | Next / previous tab |
+| `]l` / `[l` | Next / previous location list item |
+| `]a` / `[a` | Next / previous argument list file |
+| `]<Space>` / `[<Space>` | Add a blank line below / above |
+| `]n` / `[n` | Next / previous treesitter node (visual) |
+
+#### Completion (blink.cmp defaults)
+
+| Key | Action |
+| --- | --- |
+| `Ctrl-Space` | Show menu, then show / hide documentation |
+| `Ctrl-N` / `Ctrl-P` | Next / previous item |
+| `Down` / `Up` | Next / previous item |
+| `Ctrl-Y` | Accept the selected item |
+| `Ctrl-E` | Cancel |
+| `Ctrl-B` / `Ctrl-F` | Scroll documentation up / down |
+| `Ctrl-K` | Toggle signature help |
+| `Tab` / `Shift-Tab` | Jump forward / back through snippet placeholders |
+
+#### File explorer (nvim-tree defaults)
+
+Press `g?` inside the tree for the full list.
+
+| Key | Action |
+| --- | --- |
+| `Enter` / `o` | Open |
+| `Tab` | Open preview |
+| `Ctrl-V` / `Ctrl-X` / `Ctrl-T` | Open in vertical split / horizontal split / new tab |
+| `a` | Create file or directory (end with `/` for a directory) |
+| `d` / `D` | Delete / trash |
+| `r` / `e` | Rename / rename basename only |
+| `c` / `x` / `p` | Copy / cut / paste |
+| `y` / `Y` / `gy` | Copy name / relative path / absolute path |
+| `R` | Refresh |
+| `H` | Toggle hidden (dotfiles) |
+| `I` | Toggle git-ignored files |
+| `E` / `W` | Expand all / collapse all |
+| `f` / `F` | Start / clear live filter |
+| `S` | Search |
+| `P` | Jump to parent directory |
+| `<` / `>` | Previous / next sibling |
+| `J` / `K` | Last / first sibling |
+| `-` | Go up a directory |
+| `Backspace` | Close directory |
+| `]c` / `[c` | Next / previous git change |
+| `]e` / `[e` | Next / previous diagnostic |
+| `m` | Toggle bookmark |
+| `q` | Close the tree |
+
+#### Telescope (defaults, inside a picker)
+
+Press `Ctrl-/` in insert mode or `?` in normal mode for the full list.
+
+| Key | Action |
+| --- | --- |
+| `Ctrl-N` / `Ctrl-P` | Next / previous result |
+| `j` / `k` | Next / previous result (normal mode) |
+| `Enter` | Open |
+| `Ctrl-V` / `Ctrl-X` / `Ctrl-T` | Open in vertical split / horizontal split / new tab |
+| `Ctrl-U` / `Ctrl-D` | Scroll the preview up / down |
+| `Tab` / `Shift-Tab` | Toggle selection and move down / up |
+| `Ctrl-Q` | Send all results to the quickfix list |
+| `Alt-Q` | Send selected results to the quickfix list |
+| `Ctrl-C` / `Esc` | Close |
+
+#### Trouble (defaults, inside the list)
+
+| Key | Action |
+| --- | --- |
+| `Enter` | Jump to the item |
+| `o` | Jump and close the list |
+| `Ctrl-V` / `Ctrl-S` | Jump in a vertical / horizontal split |
+| `p` / `P` | Preview / toggle auto preview |
+| `}` or `]]` / `{` or `[[` | Next / previous item |
+| `r` / `R` | Refresh / toggle auto refresh |
+| `dd` | Delete the item from the list |
+| `q` / `Esc` | Close / cancel |
+| `?` | Help |
+
+#### Git
+
+Neogit opens with `<leader>g` and is driven by its own popups; press `?` inside it for the full list.
+gitsigns adds no keybindings here - it shows inline blame for the current line automatically.
+
+#### A note on shadowed keys
+
+`an` and `in` come from mini.ai (around / inside the *next* text object) and shadow Neovim 0.12's built-in treesitter node selection, which used the same keys.
+Node navigation is still available on `]n` and `[n` in visual mode.
+If you would rather keep the built-ins, remove mini.ai from `home/.config/nvim/lua/plugins/editing.lua`.
+
 ## Notes
 
 The first time you launch `nvim`, it bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins from GitHub.
