@@ -1,9 +1,22 @@
 return {
-  -- cs"' to change surrounding quotes, ds( to delete brackets, ys<motion> to add
+  -- gsa/gsd/gsr to add, delete and replace surroundings.
   {
     'echasnovski/mini.surround',
     event = 'BufReadPost',
-    opts = {},
+    opts = {
+      -- mini.surround defaults to an `s` prefix, which would make flash.nvim's
+      -- bare `s` wait out timeoutlen on every jump to see if `sa`/`sd`/... is
+      -- coming. Moving to `gs` keeps `s` instant.
+      mappings = {
+        add = 'gsa',
+        delete = 'gsd',
+        find = 'gsf',
+        find_left = 'gsF',
+        highlight = 'gsh',
+        replace = 'gsr',
+        update_n_lines = 'gsn',
+      },
+    },
   },
 
   -- Treesitter-aware af/if (function) and ac/ic (class) text objects.
