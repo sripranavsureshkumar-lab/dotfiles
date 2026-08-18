@@ -16,6 +16,21 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    tree-sitter  # nvim-treesitter's main branch shells out to this to build parsers
+    # language servers - declared here, never via mason, so a fresh
+    # mac gets the same tooling from one rebuild
+    lua-language-server
+    nixd                          # nix
+    vtsls                         # typescript/javascript
+    vscode-langservers-extracted  # html, cssls, jsonls, eslint
+    basedpyright                  # python
+    clang-tools                   # clangd + clang-format (large: ~1.4gb unpacked)
+    # formatters conform.nvim shells out to
+    stylua
+    nixfmt      # nixfmt-rfc-style is deprecated; this is the same thing
+    prettierd
+    ruff        # python lint + format
+    python3     # the system one is 3.6
     # the font everything renders in
     nerd-fonts.hack
   ];
