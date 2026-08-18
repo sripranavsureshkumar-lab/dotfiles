@@ -68,6 +68,17 @@ nix build .#darwinConfigurations.mac.system --dry-run
 
 If you renamed the host label in "Make it yours", substitute your label for `mac` in these commands.
 
+### Test the Neovim config
+
+```sh
+./test-nvim.sh
+```
+
+Checks that the Nix config evaluates, every Lua file parses, all plugins install, Treesitter parsers actually compile, and every enabled LSP server has a config.
+It runs nvim under a throwaway `NVIM_APPNAME`, so your real `~/.config/nvim` and `~/.local/share/nvim` are untouched, and it cleans up after itself.
+
+Run `./rebuild.sh` first: the language servers, formatters, and the `tree-sitter` CLI all come from `home.nix`, and the script checks they are on `PATH`.
+
 ## Daily use
 
 Edit the config files in place, then apply:
@@ -128,6 +139,7 @@ If you don't use it, just remove it from `brews` in your copy.
 - `home.nix` - user-level config: shell, packages, prompt, and the symlinks described below.
 - `rebuild.sh` - re-applies the config after the first switch.
   Run this every time you make a change.
+- `test-nvim.sh` - self-test for the Neovim config, run in a throwaway sandbox.
 - `home/` - the actual config files that get symlinked into place (Neovim, WezTerm, herdr, Claude settings, the shared `AGENTS.md`).
 
 ## How the symlinks work
